@@ -59,37 +59,45 @@ const Channels = () => {
     setShowSidebar(!showSidebar);
   };
 
-  const addChannel = async (name) => {
-    const newName = name;
+  const sleep = (ms) => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  const addChannels = async (channelNames) => {
     const mode = 'RESTRICTED';
     const privacy = 'PRIVATE';
     const userId = member.userId;
 
-    const channelArn = await createChannel(
-      appConfig.appInstanceArn,
-      newName,
-      mode,
-      privacy,
-      userId
-    );
+    const channelsArns = Promise.all(channelNames.map(async channelName => {
+      return await createChannel(
+        appConfig.appInstanceArn,
+        channelName,
+        mode,
+        privacy,
+        userId
+      );
+    }));
 
-    if (channelArn) {
-      const channel = await describeChannel(channelArn, userId);
-      if (channel) {
+    if (channelsArns.length > 0) {
+      const channels = Promise.all(channelsArns.map(async arn => { return await describeChannel(arn, userId) }));
+
+      if (true) {
         setModal('');
-        setChannelList([...channelList, channel]);
-        dispatch({
-          type: 0,
-          payload: {
-            message: 'Successfully created channel.',
-            severity: 'success',
-            autoClose: true,
-          },
-        });
-        //setActiveChannel(channel);
-        channelIdChangeHandler(channel.ChannelArn);
+        setChannelList([...channelList, ...channels]);;
+        //setActiveChannel(channels[0]);
+        //channelIdChangeHandler(channels[0].ChannelArn);
       }
     }
+
+    await sleep(3000);
+    dispatch({
+      type: 0,
+      payload: {
+        message: 'You\'ve been matched with new patients!',
+        severity: 'success',
+        autoClose: true,
+      },
+    });
   }
 
   const handleLocationChange = async () => {
@@ -103,9 +111,7 @@ const Channels = () => {
       .then(data => console.log(data));
 
     // add channels based on response
-    addChannel("test4");
-    //addChannel("test5");
-    //addChannel("test6");
+    addChannels(["Olivia Taylor", "Jonathan Washington"]);
   };
 
   const HeadingWrapper = styled.div`

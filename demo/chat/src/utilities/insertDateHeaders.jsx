@@ -21,11 +21,7 @@ const insertDateHeaders = messageItems => {
       items.splice(
         0,
         0,
-        <Badge
-          key={`date${i.toString()}`}
-          value={'You have been matched - Location, tumour stream, age'}
-          className="date-header"
-        />
+        ""
       );
       dateMap[new Date(m.createdTimestamp).toLocaleDateString()] = 1;
       dateCount++;

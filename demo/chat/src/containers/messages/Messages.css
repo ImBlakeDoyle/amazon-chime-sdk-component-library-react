@@ -20,3 +20,9 @@
   right: 0;
   left: 0;
 }
+
+.date-header {
+  display: flex !important;
+  margin: 0 auto;
+  width: fit-content;
+}

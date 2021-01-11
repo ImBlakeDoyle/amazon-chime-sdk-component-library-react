@@ -27,6 +27,7 @@ import {
   redactChannelMessage,
 } from '../../api/ChimeAPI';
 import insertDateHeaders from '../../utilities/insertDateHeaders';
+import { Badge } from 'amazon-chime-sdk-component-library-react';
 
 import './Messages.css';
 import { useChatChannelState } from '../../providers/ChatMessagesProvider';
@@ -285,6 +286,11 @@ const Messages = ({
       {showDiscardModal && discardModal}
       {showRedactModal && redactModal}
       <div className="message-list-header">{channelName}</div>
+      <Badge
+          key="date"
+          value={'Things you have in common: #BrisbainLife #ExperiencingBreastCancer #HavingChildren'}
+          className="date-header"
+        />
       <InfiniteList
         style={{ display: 'flex', flexGrow: '1' }}
         items={messageList}
