@@ -283,7 +283,7 @@ const Channels = () => {
               <b>Gender: </b>Female
             </SidebarSection>
             <SidebarSection>
-              <b>DOB: </b>16 Apr 1969 (age 48)
+              <b>DOB: </b>16 Apr 1969 (age 51)
             </SidebarSection>
             <SidebarSection>
               <b>Tumour Stream: </b>Breast Cancer
