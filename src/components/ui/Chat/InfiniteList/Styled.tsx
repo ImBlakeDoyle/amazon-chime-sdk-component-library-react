@@ -20,7 +20,7 @@ interface StyledInfiniteListProps extends InfiniteListProps {}
 
 export const StyledInfiniteList = styled.ul<StyledInfiniteListProps>`
   background-color: ${(props) => props.theme.chatBubble.container.bgd};
-  overflow-y: scroll;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   list-style: none;

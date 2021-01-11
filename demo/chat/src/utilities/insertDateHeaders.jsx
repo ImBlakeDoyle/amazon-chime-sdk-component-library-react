@@ -7,7 +7,7 @@ import React from 'react';
 
 import './styles.css';
 
-const insertDateHeaders = (messageItems) => {
+const insertDateHeaders = messageItems => {
   const items = [...messageItems];
   const dateMap = {};
   let messageDate;
@@ -23,7 +23,7 @@ const insertDateHeaders = (messageItems) => {
         0,
         <Badge
           key={`date${i.toString()}`}
-          value={formatDate(m.createdTimestamp)}
+          value={'You have been matched - Location, tumour stream, age'}
           className="date-header"
         />
       );

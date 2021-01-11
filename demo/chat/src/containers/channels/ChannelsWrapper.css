@@ -18,8 +18,14 @@ button.create-channel-button {
   display: flex;
   align-items: center;
   cursor: unset;
+  color: #716e6a;
+  padding: 8px;
 }
 
 li.separator {
   margin: 0.5rem 0;
+}
+
+.channel-list {
+  background-color: '#F5F5F4';
 }

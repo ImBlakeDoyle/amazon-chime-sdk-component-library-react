@@ -14,7 +14,7 @@ import {
   Dots,
   useNotificationDispatch,
   ChannelList,
-  ChannelItem,
+  ChannelItem
 } from 'amazon-chime-sdk-component-library-react';
 import { useTheme } from 'styled-components';
 import {
@@ -31,7 +31,7 @@ import {
   listChannelModerators,
   listChannelBans,
   createChannelBan,
-  deleteChannelBan,
+  deleteChannelBan
 } from '../../api/ChimeAPI';
 import appConfig from '../../Config';
 
@@ -39,7 +39,7 @@ import { useUserPermission } from '../../providers/UserPermissionProvider';
 import mergeArrayOfObjects from '../../utilities/mergeArrays';
 import {
   useChatChannelState,
-  useChatMessagingState,
+  useChatMessagingState
 } from '../../providers/ChatMessagesProvider';
 import { useAuthContext } from '../../providers/AuthProvider';
 import ModalManager from './ModalManager';
@@ -66,7 +66,7 @@ const ChannelsWrapper = () => {
     setChannelMessageToken,
     unreadChannels,
     setUnreadChannels,
-    hasMembership,
+    hasMembership
   } = useChatChannelState();
   const { setMessages } = useChatMessagingState();
 
@@ -78,7 +78,7 @@ const ChannelsWrapper = () => {
         userId
       );
       const userChannelList = userChannelMemberships.map(
-        (channelMembership) => channelMembership.ChannelSummary
+        channelMembership => channelMembership.ChannelSummary
       );
       const publicChannels = await listChannels(
         appConfig.appInstanceArn,
@@ -106,10 +106,10 @@ const ChannelsWrapper = () => {
       null,
       userId
     );
-    setBanList(banListResponse.ChannelBans.map((m) => m.Member.Arn));
+    setBanList(banListResponse.ChannelBans.map(m => m.Member.Arn));
   };
 
-  const banUser = async (memberArn) => {
+  const banUser = async memberArn => {
     try {
       await createChannelBan(activeChannel.ChannelArn, memberArn, userId);
       const newBanList = banList.concat(...banList, memberArn);
@@ -118,21 +118,21 @@ const ChannelsWrapper = () => {
         type: 0,
         payload: {
           message: 'Successfully banned user.',
-          severity: 'success',
-        },
+          severity: 'success'
+        }
       });
     } catch {
       dispatch({
         type: 0,
         payload: {
           message: 'Error, unable to perform this action.',
-          severity: 'error',
-        },
+          severity: 'error'
+        }
       });
     }
   };
 
-  const unbanUser = async (memberArn) => {
+  const unbanUser = async memberArn => {
     await deleteChannelBan(activeChannel.ChannelArn, memberArn, userId);
     await getBanList();
   };
@@ -154,8 +154,8 @@ const ChannelsWrapper = () => {
         type: 0,
         payload: {
           message: 'Error, channel name cannot be blank.',
-          severity: 'error',
-        },
+          severity: 'error'
+        }
       });
     } else {
       const channelArn = await createChannel(
@@ -175,8 +175,8 @@ const ChannelsWrapper = () => {
             payload: {
               message: 'Successfully created channel.',
               severity: 'success',
-              autoClose: true,
-            },
+              autoClose: true
+            }
           });
           setActiveChannel(channel);
           channelIdChangeHandler(channel.ChannelArn);
@@ -186,8 +186,8 @@ const ChannelsWrapper = () => {
             payload: {
               message: 'Error, could not retreive channel information.',
               severity: 'error',
-              autoClose: false,
-            },
+              autoClose: false
+            }
           });
         }
       } else {
@@ -196,14 +196,14 @@ const ChannelsWrapper = () => {
           payload: {
             message: 'Error, could not create new channel.',
             severity: 'error',
-            autoClose: false,
-          },
+            autoClose: false
+          }
         });
       }
     }
   };
 
-  const joinChannel = async (e) => {
+  const joinChannel = async e => {
     e.preventDefault();
     const membership = await createChannelMembership(
       activeChannel.ChannelArn,
@@ -220,8 +220,8 @@ const ChannelsWrapper = () => {
         payload: {
           message: `Successfully joined ${activeChannel.Name}`,
           severity: 'success',
-          autoClose: true,
-        },
+          autoClose: true
+        }
       });
     } else {
       dispatch({
@@ -229,8 +229,8 @@ const ChannelsWrapper = () => {
         payload: {
           message: 'Error occured. Unable to join channel.',
           severity: 'error',
-          autoClose: true,
-        },
+          autoClose: true
+        }
       });
     }
   };
@@ -241,8 +241,8 @@ const ChannelsWrapper = () => {
         type: 0,
         payload: {
           message: 'Error, user name cannot be blank.',
-          severity: 'error',
-        },
+          severity: 'error'
+        }
       });
       return;
     }
@@ -262,8 +262,8 @@ const ChannelsWrapper = () => {
         payload: {
           message: `New ${selectedMember.label} successfully added to ${activeChannel.Name}`,
           severity: 'success',
-          autoClose: true,
-        },
+          autoClose: true
+        }
       });
       setModal('');
     } catch {
@@ -272,13 +272,13 @@ const ChannelsWrapper = () => {
         payload: {
           message: 'Error occured. Member not added to channel.',
           severity: 'error',
-          autoClose: true,
-        },
+          autoClose: true
+        }
       });
     }
   };
 
-  const channelIdChangeHandler = async (channelArn) => {
+  const channelIdChangeHandler = async channelArn => {
     if (activeChannel.ChannelArn === channelArn) return;
     let mods = [];
     setActiveChannelModerators([]);
@@ -290,7 +290,7 @@ const ChannelsWrapper = () => {
     }
 
     const isModerator =
-      mods?.find((moderator) => moderator.Moderator.Arn === messagingUserArn) ||
+      mods?.find(moderator => moderator.Moderator.Arn === messagingUserArn) ||
       false;
 
     // Assessing user role for given channel
@@ -301,14 +301,14 @@ const ChannelsWrapper = () => {
     setMessages(newMessages.Messages);
     setChannelMessageToken(newMessages.NextToken);
     setActiveChannel(channel);
-    setUnreadChannels(unreadChannels.filter((c) => c !== channelArn));
+    setUnreadChannels(unreadChannels.filter(c => c !== channelArn));
   };
 
   const handleChannelDeletion = async (e, channelArn) => {
     e.preventDefault();
     await deleteChannel(channelArn, userId);
     const newChannelList = channelList.filter(
-      (channel) => channel.ChannelArn !== channelArn
+      channel => channel.ChannelArn !== channelArn
     );
     setChannelList(newChannelList);
     setActiveChannel('');
@@ -319,13 +319,13 @@ const ChannelsWrapper = () => {
       payload: {
         message: 'Channel successfully deleted.',
         severity: 'success',
-        autoClose: true,
-      },
+        autoClose: true
+      }
     });
   };
 
-  const formatMemberships = (memArr) =>
-    memArr.flatMap((m) =>
+  const formatMemberships = memArr =>
+    memArr.flatMap(m =>
       m.Member.Arn !== messagingUserArn
         ? [{ value: m.Member.Arn, label: m.Member.Name }]
         : []
@@ -339,7 +339,7 @@ const ChannelsWrapper = () => {
     setActiveChannelMemberships(memberships);
   };
 
-  const handlePickerChange = (changes) => {
+  const handlePickerChange = changes => {
     setSelectedMember(changes);
   };
 
@@ -355,8 +355,8 @@ const ChannelsWrapper = () => {
         payload: {
           message: 'Sucessfully removed members from the channel.',
           severity: 'success',
-          autoClose: true,
-        },
+          autoClose: true
+        }
       });
       setSelectedMember({});
     } catch (err) {
@@ -364,8 +364,8 @@ const ChannelsWrapper = () => {
         type: 0,
         payload: {
           message: 'Error, unable to remove members.',
-          severity: 'error',
-        },
+          severity: 'error'
+        }
       });
     }
   };
@@ -382,8 +382,8 @@ const ChannelsWrapper = () => {
         payload: {
           message: `Sucessfully left ${activeChannel.Name}.`,
           severity: 'success',
-          autoClose: true,
-        },
+          autoClose: true
+        }
       });
       setSelectedMember({});
     } catch (err) {
@@ -391,8 +391,8 @@ const ChannelsWrapper = () => {
         type: 0,
         payload: {
           message: 'Error, unable to leave the channel.',
-          severity: 'error',
-        },
+          severity: 'error'
+        }
       });
     }
   };
@@ -405,7 +405,7 @@ const ChannelsWrapper = () => {
     setIsRestricted(activeChannel.Mode === 'RESTRICTED');
   }, [activeChannel]);
 
-  const loadUserActions = (role) => {
+  const loadUserActions = role => {
     const joinChannelOption = (
       <PopOverItem key="join_channel" as="button" onClick={joinChannel}>
         <span>Join Channel</span>
@@ -489,14 +489,14 @@ const ChannelsWrapper = () => {
       banOrAllowOption,
       <PopOverSeparator key="separator2" className="separator" />,
       leaveChannelOption,
-      deleteChannelOption,
+      deleteChannelOption
     ];
     const restrictedMemberActions = [
       viewDetailsOption,
       <PopOverSeparator key="separator1" className="separator" />,
       viewMembersOption,
       <PopOverSeparator key="separator2" className="separator" />,
-      leaveChannelOption,
+      leaveChannelOption
     ];
     const unrestrictedMemberActions = [
       viewDetailsOption,
@@ -504,13 +504,13 @@ const ChannelsWrapper = () => {
       viewMembersOption,
       addMembersOption,
       <PopOverSeparator key="separator2" className="separator" />,
-      leaveChannelOption,
+      leaveChannelOption
     ];
 
     const nonMemberActions = [
       joinChannelOption,
       viewDetailsOption,
-      viewMembersOption,
+      viewMembersOption
     ];
 
     if (!hasMembership) {
@@ -546,7 +546,7 @@ const ChannelsWrapper = () => {
       />
       <div className="channel-list-wrapper">
         <div className="channel-list-header">
-          <div className="channel-list-header-title">Channels</div>
+          <div className="channel-list-header-title">Conversations</div>
           <IconButton
             className="create-channel-button channel-options"
             onClick={() => setModal('NewChannel')}
@@ -555,10 +555,10 @@ const ChannelsWrapper = () => {
         </div>
         <ChannelList
           style={{
-            padding: '8px',
+            padding: '8px'
           }}
         >
-          {channelList.map((channel) => (
+          {channelList.map(channel => (
             <ChannelItem
               key={channel.ChannelArn}
               name={channel.Name}
