@@ -16,21 +16,29 @@ import {
   ChatBubbleContainer,
   EditableChatBubble,
   formatDate,
-  formatTime,
+  formatTime
 } from 'amazon-chime-sdk-component-library-react';
+import styled from 'styled-components';
 import { AttachmentProcessor } from './AttachmentProcessor';
 
 import {
   listChannelMessages,
   createMemberArn,
   updateChannelMessage,
-  redactChannelMessage,
+  redactChannelMessage
 } from '../../api/ChimeAPI';
 import insertDateHeaders from '../../utilities/insertDateHeaders';
 import { Badge } from 'amazon-chime-sdk-component-library-react';
 
 import './Messages.css';
 import { useChatChannelState } from '../../providers/ChatMessagesProvider';
+import Avatar from './Avatar1.png';
+
+const CommonContainer = styled.div`
+  font-size: 16px;
+  line-height: 24px;
+  padding: 32px;
+`;
 
 const Messages = ({
   messages,
@@ -40,7 +48,7 @@ const Messages = ({
   channelName,
   userId,
   setChannelMessageToken,
-  activeChannelRef,
+  activeChannelRef
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { channelMessageTokenRef } = useChatChannelState();
@@ -93,14 +101,14 @@ const Messages = ({
               variant="secondary"
               closesModal
               key="2"
-            />,
+            />
           ]}
         />
       </ModalBody>
     </Modal>
   );
 
-  const handleShowRedactModal = (messageId) => {
+  const handleShowRedactModal = messageId => {
     setRedactingMessageId(messageId);
     setShowRedactModal(true);
   };
@@ -134,14 +142,14 @@ const Messages = ({
               variant="secondary"
               closesModal
               key="2"
-            />,
+            />
           ]}
         />
       </ModalBody>
     </Modal>
   );
 
-  const cancelEdit = (e) => {
+  const cancelEdit = e => {
     e.preventDefault();
     setShowDiscardModal(true);
   };
@@ -158,7 +166,7 @@ const Messages = ({
     setEditingMessageId('');
   };
 
-  const flattenedMessages = messages.map((m) => {
+  const flattenedMessages = messages.map(m => {
     const content = !m.Content || m.Redacted ? '(Deleted)' : m.Content;
     let editedNote;
     if (m.LastEditedTimestamp && !m.Redacted) {
@@ -176,7 +184,7 @@ const Messages = ({
       redacted: m.Redacted,
       senderName: m.Sender.Name,
       senderId: m.Sender.Arn,
-      metadata: m.Metadata,
+      metadata: m.Metadata
     };
   });
 
@@ -201,7 +209,7 @@ const Messages = ({
           key="2"
           children={<span>Delete</span>}
           onClick={() => handleShowRedactModal(m.messageId)}
-        />,
+        />
       ];
     }
 
@@ -226,7 +234,7 @@ const Messages = ({
       showName = false;
     }
 
-    const attachment = (metadata) => {
+    const attachment = metadata => {
       try {
         const metadataJSON = JSON.parse(metadata);
         return metadataJSON?.attachments[0];
@@ -237,12 +245,12 @@ const Messages = ({
     };
 
     return (
-      <div className="message">
+      <div className="message" style={{ backgroundColor: 'white' }}>
         <ChatBubbleContainer
           timestamp={formatTime(m.createdTimestamp)}
           actions={actions}
           key={`message${i.toString()}`}
-          css="margin: 1rem;"
+          css="margin: 1rem; background-color: white"
         >
           {editingMessageId === m.messageId && !m.redacted ? (
             <EditableChatBubble
@@ -285,12 +293,33 @@ const Messages = ({
     <div className="message-list-container">
       {showDiscardModal && discardModal}
       {showRedactModal && redactModal}
-      <div className="message-list-header">{channelName}</div>
-      <Badge
-          key="date"
-          value={'Things you have in common: #BrisbainLife #ExperiencingBreastCancer #HavingChildren'}
-          className="date-header"
-        />
+      <div className="message-list-header">
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            marginRight: '100px'
+          }}
+        >
+          <img
+            src={Avatar}
+            alt="sdgsdf"
+            height="40px"
+            width="40px"
+            style={{ marginRight: '8px' }}
+          />
+          <strong>{channelName}</strong>
+        </div>
+        <i>
+          “First time cancer patient, trying to keep working whilst going
+          through treatment and looking after my two young sons. Let’s chat
+          about Asian cooking!”
+        </i>
+      </div>
+      <CommonContainer>
+        <div>Things you have in common with Olivia:</div>
+        <div>#ExperiencingBreastCancer #HavingChildren #Foodie</div>
+      </CommonContainer>
       <InfiniteList
         style={{ display: 'flex', flexGrow: '1' }}
         items={messageList}

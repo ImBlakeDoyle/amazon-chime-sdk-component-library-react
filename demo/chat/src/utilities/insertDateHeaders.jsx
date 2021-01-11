@@ -4,8 +4,15 @@
 
 import { Badge, formatDate } from 'amazon-chime-sdk-component-library-react';
 import React from 'react';
+import styled from 'styled-components';
 
 import './styles.css';
+
+const CommonContainer = styled.div`
+  font-size: 16px;
+  line-height: 24px;
+  padding: 32px;
+`;
 
 const insertDateHeaders = messageItems => {
   const items = [...messageItems];
@@ -21,7 +28,12 @@ const insertDateHeaders = messageItems => {
       items.splice(
         0,
         0,
-        ""
+        <div />
+        // <Badge
+        //   key={`date${i.toString()}`}
+        //   value={'You have been matched - Location, tumour stream, age'}
+        //   className="date-header"
+        // />
       );
       dateMap[new Date(m.createdTimestamp).toLocaleDateString()] = 1;
       dateCount++;

@@ -69,6 +69,7 @@ export const StyledChannelItem = styled.li<ChannelItemProps>`
   &.ch-selected .ch-channel-button {
     background-color: #00a963;
     color: white;
+    width: 100%;
 
     &:focus {
       border: ${(props) => props.theme.channelList.focus.selectedBorder};
@@ -77,7 +78,7 @@ export const StyledChannelItem = styled.li<ChannelItemProps>`
 
   & .ch-popover-toggle {
     position: absolute;
-    right: 1rem;
+    right: 3rem;
     margin: 0.5rem 0;
     height: 1.5rem;
     border-radius: 50%;

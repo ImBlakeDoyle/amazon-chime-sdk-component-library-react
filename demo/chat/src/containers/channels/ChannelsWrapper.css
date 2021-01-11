@@ -29,3 +29,7 @@ li.separator {
 .channel-list {
   background-color: '#F5F5F4';
 }
+
+.ch-selected {
+  width: 100%;
+}

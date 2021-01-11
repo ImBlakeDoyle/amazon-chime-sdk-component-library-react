@@ -28,12 +28,13 @@ import logo from './logo.png';
 import GCLogo from './GCLogo.png';
 import { describeChannel, createChannel } from '../../api/ChimeAPI';
 import appConfig from '../../Config';
+import Person from './Avatar1.png';
 
 const Channels = () => {
   const dispatch = useNotificationDispatch();
   const currentTheme = useTheme();
   const [showSidebar, setShowSidebar] = useState(false);
-  const [location, setLocation] = useState("sydney");
+  const [location, setLocation] = useState('sydney');
   const [modal, setModal] = useState('');
 
   const { member, userSignOut } = useAuthContext();
@@ -60,30 +61,36 @@ const Channels = () => {
   };
 
   const sleep = (ms) => {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  };
 
   const addChannels = async (channelNames) => {
     const mode = 'RESTRICTED';
     const privacy = 'PRIVATE';
     const userId = member.userId;
 
-    const channelsArns = Promise.all(channelNames.map(async channelName => {
-      return await createChannel(
-        appConfig.appInstanceArn,
-        channelName,
-        mode,
-        privacy,
-        userId
-      );
-    }));
+    const channelsArns = Promise.all(
+      channelNames.map(async (channelName) => {
+        return await createChannel(
+          appConfig.appInstanceArn,
+          channelName,
+          mode,
+          privacy,
+          userId
+        );
+      })
+    );
 
     if (channelsArns.length > 0) {
-      const channels = Promise.all(channelsArns.map(async arn => { return await describeChannel(arn, userId) }));
+      const channels = Promise.all(
+        channelsArns.map(async (arn) => {
+          return await describeChannel(arn, userId);
+        })
+      );
 
       if (true) {
         setModal('');
-        setChannelList([...channelList, ...channels]);;
+        setChannelList([...channelList, ...channels]);
         //setActiveChannel(channels[0]);
         //channelIdChangeHandler(channels[0].ChannelArn);
       }
@@ -93,22 +100,25 @@ const Channels = () => {
     dispatch({
       type: 0,
       payload: {
-        message: 'You\'ve been matched with new patients!',
+        message: "You've been matched with new patients!",
         severity: 'success',
         autoClose: true,
       },
     });
-  }
+  };
 
   const handleLocationChange = async () => {
-    setLocation("brisbane");
+    setLocation('brisbane');
 
     // get response from AWS lambda
-    fetch('https://niqwtahfb6.execute-api.us-east-1.amazonaws.com/default/MatchingService', {
-      mode: 'cors',
-    })
-      .then(response => response.json())
-      .then(data => addChannels(data));
+    fetch(
+      'https://niqwtahfb6.execute-api.us-east-1.amazonaws.com/default/MatchingService',
+      {
+        mode: 'cors',
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => addChannels(data));
 
     // add channels based on response
     //addChannels(["Olivia Taylor", "Jonathan Washington"]);
@@ -128,11 +138,19 @@ const Channels = () => {
     height: calc(100% - (48px + 1rem));
     width: 320px;
     z-index: 999;
+    height: calc(100% - (48px + 1rem));
   `;
 
   const SidebarSection = styled.div`
     padding: 16px;
     border: 1px solid #e2e1df;
+  `;
+
+  const Settings = styled(SidebarSection)`
+    background-color: #f5f5f4;
+    border: none;
+    display: flex;
+    justify-content: space-between;
   `;
 
   const StyledGCLogo = styled.img`
@@ -209,7 +227,10 @@ const Channels = () => {
         {/* MAIN CHAT CONTENT WINDOW */}
         {activeChannel.ChannelArn ? (
           <>
-            <div className="messaging-container">
+            <div
+              className="messaging-container"
+              style={{ backgroundColor: 'white' }}
+            >
               <Messages
                 messages={messages}
                 messagesRef={messagesRef}
@@ -223,6 +244,7 @@ const Channels = () => {
                 activeChannelRef={activeChannelRef}
                 channelName={activeChannel.Name}
                 userId={member.userId}
+                style={{ backgroundColor: 'white' }}
               />
               <Input
                 style={{
@@ -239,21 +261,52 @@ const Channels = () => {
         )}
         {showSidebar && (
           <Sidebar>
-            <SidebarSection><h1>{member.username}</h1></SidebarSection>
-            <SidebarSection><b>Gender: </b>Female</SidebarSection>
-            <SidebarSection><b>DOB: </b>16 Apr 1969 (age 48)</SidebarSection>
-            <SidebarSection><b>Tumour Stream: </b>Breast Cancer</SidebarSection>
-            <SidebarSection><b>Location: </b>
+            <Settings>
+              <strong>
+                <span>My Account Settings</span>
+              </strong>
+              <strong>
+                <span
+                  role="presentation"
+                  onClick={() => setShowSidebar(false)}
+                  style={{ cursor: 'pointer', color: '#00a963' }}
+                >
+                  X
+                </span>
+              </strong>
+            </Settings>
+            <SidebarSection style={{ display: 'flex', alignItems: 'center' }}>
+              <img src={Person} alt="sdfg" style={{ marginRight: '8px' }} />
+              <b>{member.username}</b>
+            </SidebarSection>
+            <SidebarSection>
+              <b>Gender: </b>Female
+            </SidebarSection>
+            <SidebarSection>
+              <b>DOB: </b>16 Apr 1969 (age 48)
+            </SidebarSection>
+            <SidebarSection>
+              <b>Tumour Stream: </b>Breast Cancer
+            </SidebarSection>
+            <SidebarSection>
+              <b>Location: </b>
               <select onChange={handleLocationChange} value={location}>
                 <option value="sydney">Sydney</option>
                 <option value="brisbane">Brisbane</option>
                 <option value="melbourne">Melbourne</option>
               </select>
             </SidebarSection>
-            <SidebarSection><b>Bio:</b>
-              <div>I was diagnosed with breast cancer four years ago and have been cancer free for the last two years.</div>
+            <SidebarSection>
+              <b>Bio:</b>
+              <div>
+                I was diagnosed with breast cancer four years ago and have been
+                cancer free for the last two years.
+              </div>
               <br></br>
-              <div>Just moved to Brisbane looking to connect with new Brisbane based patients and survivors.</div>
+              <div>
+                Just moved to Brisbane looking to connect with new Brisbane
+                based patients and survivors.
+              </div>
             </SidebarSection>
           </Sidebar>
         )}

@@ -6,7 +6,6 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react';
-
 import {
   PopOverItem,
   PopOverSeparator,
@@ -16,7 +15,7 @@ import {
   ChannelList,
   ChannelItem
 } from 'amazon-chime-sdk-component-library-react';
-import { useTheme } from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import {
   createMemberArn,
   createChannelMembership,
@@ -43,6 +42,10 @@ import {
 } from '../../providers/ChatMessagesProvider';
 import { useAuthContext } from '../../providers/AuthProvider';
 import ModalManager from './ModalManager';
+import group from './group.png';
+import avatar1 from './Avatar1.png';
+import avatar2 from './Avatar2.png';
+import avatar3 from './Avatar3.png';
 
 import './ChannelsWrapper.css';
 
@@ -558,21 +561,50 @@ const ChannelsWrapper = () => {
             padding: '8px'
           }}
         >
-          {channelList.map(channel => (
-            <ChannelItem
-              key={channel.ChannelArn}
-              name={channel.Name}
-              actions={loadUserActions(userPermission.role)}
-              isSelected={channel.ChannelArn === activeChannel.ChannelArn}
-              onClick={() => channelIdChangeHandler(channel.ChannelArn)}
-              unread={unreadChannels.includes(channel.ChannelArn)}
-              unreadBadgeLabel="New"
-            />
-          ))}
+          {channelList.map(channel => {
+            const avatarList = [avatar1, avatar2, avatar3];
+            const random = Math.floor(Math.random() * avatarList.length);
+            const activeConvo = channel.ChannelArn === activeChannel.ChannelArn;
+            return (
+              <ConversationContainer activeConvo={activeConvo}>
+                <ImageContainer>
+                  {channel.Name.includes('Group') ? (
+                    <img src={group} alt="avatar" />
+                  ) : (
+                    <img src={avatarList[random]} alt="whatever" />
+                  )}
+                </ImageContainer>
+                <ChannelItem
+                  key={channel.ChannelArn}
+                  name={channel.Name}
+                  actions={loadUserActions(userPermission.role)}
+                  isSelected={channel.ChannelArn === activeChannel.ChannelArn}
+                  onClick={() => channelIdChangeHandler(channel.ChannelArn)}
+                  unread={unreadChannels.includes(channel.ChannelArn)}
+                  unreadBadgeLabel="New"
+                  className="conversation-test"
+                />
+              </ConversationContainer>
+            );
+          })}
         </ChannelList>
       </div>
     </>
   );
 };
+
+const ConversationContainer = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 8px 24px;
+  background-color: ${({ activeConvo }) =>
+    activeConvo ? '#00a963' : '#f5f5f4'};
+`;
+
+const ImageContainer = styled.div`
+  position: relative;
+  top: 0;
+`;
 
 export default ChannelsWrapper;

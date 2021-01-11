@@ -5,7 +5,7 @@ const path = require('path');
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const app = 'chat';
+const app = 'index';
 
 module.exports = {
   mode: 'development',

@@ -3,7 +3,7 @@
 }
 
 .message-list-container {
-  background-color: #f0f1f2;
+  background-color: white;
   overflow-y: auto;
   position: relative;
 }
@@ -11,7 +11,7 @@
 .message-list-header {
   background-color: inherit;
   text-align: center;
-  padding: 0.76rem;
+  padding: 1.5rem 3rem;
   margin-bottom: 1rem;
   border-bottom: 0.5px solid #d4d5d8;
   position: sticky;
@@ -19,6 +19,8 @@
   top: 0;
   right: 0;
   left: 0;
+  display: flex;
+  align-items: center;
 }
 
 .date-header {
