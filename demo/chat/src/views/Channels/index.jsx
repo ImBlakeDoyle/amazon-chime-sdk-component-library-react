@@ -26,10 +26,15 @@ import {
 import { useAuthContext } from '../../providers/AuthProvider';
 import logo from './logo.png';
 import GCLogo from './GCLogo.png';
+import { describeChannel, createChannel } from '../../api/ChimeAPI';
+import appConfig from '../../Config';
 
 const Channels = () => {
+  const dispatch = useNotificationDispatch();
   const currentTheme = useTheme();
   const [showSidebar, setShowSidebar] = useState(false);
+  const [location, setLocation] = useState("sydney");
+  const [modal, setModal] = useState('');
 
   const { member, userSignOut } = useAuthContext();
   const {
@@ -47,10 +52,60 @@ const Channels = () => {
     activeChannelRef,
     channelList,
     hasMembership,
+    setActiveChannel,
   } = useChatChannelState();
 
   const handleProfileClick = () => {
     setShowSidebar(!showSidebar);
+  };
+
+  const addChannel = async (name) => {
+    const newName = name;
+    const mode = 'RESTRICTED';
+    const privacy = 'PRIVATE';
+    const userId = member.userId;
+
+    const channelArn = await createChannel(
+      appConfig.appInstanceArn,
+      newName,
+      mode,
+      privacy,
+      userId
+    );
+
+    if (channelArn) {
+      const channel = await describeChannel(channelArn, userId);
+      if (channel) {
+        setModal('');
+        setChannelList([...channelList, channel]);
+        dispatch({
+          type: 0,
+          payload: {
+            message: 'Successfully created channel.',
+            severity: 'success',
+            autoClose: true,
+          },
+        });
+        //setActiveChannel(channel);
+        channelIdChangeHandler(channel.ChannelArn);
+      }
+    }
+  }
+
+  const handleLocationChange = async () => {
+    setLocation("brisbane");
+
+    // get response from AWS lambda
+    fetch('https://niqwtahfb6.execute-api.us-east-1.amazonaws.com/default/MatchingService', {
+      mode: 'cors',
+    })
+      .then(response => response.text())
+      .then(data => console.log(data));
+
+    // add channels based on response
+    addChannel("test4");
+    //addChannel("test5");
+    //addChannel("test6");
   };
 
   const HeadingWrapper = styled.div`
@@ -85,7 +140,7 @@ const Channels = () => {
       style={{ width: '100vw', height: '100vh' }}
       gridTemplateAreas='
       "heading heading"
-      "side main"      
+      "side main"
       '
     >
       <Cell gridArea="heading">
@@ -178,7 +233,22 @@ const Channels = () => {
         )}
         {showSidebar && (
           <Sidebar>
-            <SidebarSection>{member.username}</SidebarSection>
+            <SidebarSection><h1>{member.username}</h1></SidebarSection>
+            <SidebarSection><b>Gender: </b>Female</SidebarSection>
+            <SidebarSection><b>DOB: </b>16 Apr 1969 (age 48)</SidebarSection>
+            <SidebarSection><b>Tumour Stream: </b>Breast Cancer</SidebarSection>
+            <SidebarSection><b>Location: </b>
+              <select onChange={handleLocationChange} value={location}>
+                <option value="sydney">Sydney</option>
+                <option value="brisbane">Brisbane</option>
+                <option value="melbourne">Melbourne</option>
+              </select>
+            </SidebarSection>
+            <SidebarSection><b>Bio:</b>
+              <div>I was diagnosed with breast cancer four years ago and have been cancer free for the last two years.</div>
+              <br></br>
+              <div>Just moved to Brisbane looking to connect with new Brisbane based patients and survivors.</div>
+            </SidebarSection>
           </Sidebar>
         )}
       </Cell>
