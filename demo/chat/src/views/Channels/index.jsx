@@ -5,7 +5,9 @@
 // Copyright 2020-2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-import React from 'react';
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import Avatar from 'react-avatar';
 import {
   Heading,
   Grid,
@@ -22,9 +24,12 @@ import {
   useChatMessagingState,
 } from '../../providers/ChatMessagesProvider';
 import { useAuthContext } from '../../providers/AuthProvider';
+import logo from './logo.png';
+import GCLogo from './GCLogo.png';
 
 const Channels = () => {
   const currentTheme = useTheme();
+  const [showSidebar, setShowSidebar] = useState(false);
 
   const { member, userSignOut } = useAuthContext();
   const {
@@ -44,32 +49,34 @@ const Channels = () => {
     hasMembership,
   } = useChatChannelState();
 
-  const handleUserNameCopyClick = (_e) => {
-    // Create new element
-    const el = document.createElement('textarea');
-    // Set value (string to be copied)
-    el.value = member.userId;
-    // Set non-editable to avoid focus and move outside of view
-    el.setAttribute('readonly', '');
-    el.style = { position: 'absolute', left: '-9999px' };
-    document.body.appendChild(el);
-    // Select text inside element
-    el.select();
-    // Copy text to clipboard
-    document.execCommand('copy');
-    // Remove temporary element
-    document.body.removeChild(el);
-
-    notificationDispatch({
-      type: 0,
-      payload: {
-        message: 'UserId copied to clipboard!',
-        severity: 'info',
-        autoClose: true,
-        autoCloseDelay: 1000,
-      },
-    });
+  const handleProfileClick = () => {
+    setShowSidebar(!showSidebar);
   };
+
+  const HeadingWrapper = styled.div`
+    position: absolute;
+    width: 100%;
+  `;
+
+  const Sidebar = styled.div`
+    position: absolute;
+    top: calc(48px + 1rem);
+    right: 0;
+    background-color: white;
+    border: 2px solid #f5f5f4;
+    height: calc(100% - (48px + 1rem));
+    width: 320px;
+    z-index: 999;
+  `;
+
+  const SidebarSection = styled.div`
+    padding: 16px;
+    border: 1px solid #e2e1df;
+  `;
+
+  const StyledGCLogo = styled.img`
+    margin-right: 20px;
+  `;
 
   return (
     <Grid
@@ -82,36 +89,50 @@ const Channels = () => {
       '
     >
       <Cell gridArea="heading">
-        {/* HEADING */}
-        <Heading
-          level={5}
-          style={{
-            backgroundColor: currentTheme.colors.greys.grey60,
-            height: '3rem',
-            paddingLeft: '1rem',
-            color: 'white',
-          }}
-          className="app-heading"
-        >
-          Chat App
-          <div className="user-block">
-            <a className="user-info" href="#">
-              {member.username || 'Unknown'}
-              <span onClick={handleUserNameCopyClick} className="tooltiptext">
-                Click to copy UserId to clipboard!
-              </span>
-            </a>
+        <HeadingWrapper>
+          {/* HEADING */}
+          <Heading
+            level={5}
+            style={{
+              backgroundColor: 'white',
+              boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.2)',
+              height: '4rem',
+              paddingLeft: '1rem',
+              color: '2E2E2e',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+            className="app-heading"
+          >
+            <StyledGCLogo src={GCLogo} alt="GC logo" />
+            <img src={logo} alt="PatientMatchLogo" />
+            <div className="user-block">
+              <a className="user-info" href="#" onClick={handleProfileClick}>
+                <Avatar
+                  name={member.username}
+                  size="30"
+                  textSizeRatio={1.25}
+                  round
+                />
+              </a>
 
-            <a href="#" onClick={userSignOut}>
-              Log out
-            </a>
-          </div>
-        </Heading>
+              <a href="#" onClick={userSignOut}>
+                Log out
+              </a>
+            </div>
+          </Heading>
+        </HeadingWrapper>
       </Cell>
-      <Cell gridArea="side" style={{ height: 'calc(100vh - 3rem)' }}>
+      <Cell
+        gridArea="side"
+        style={{
+          height: 'calc(100% - 5rem)',
+          backgroundColor: '#F5F5F4',
+          marginTop: '1rem',
+        }}
+      >
         <div
           style={{
-            backgroundColor: currentTheme.colors.greys.grey10,
             height: '100%',
             borderRight: `solid 1px ${currentTheme.colors.greys.grey30}`,
           }}
@@ -120,7 +141,10 @@ const Channels = () => {
           <ChannelsWrapper />
         </div>
       </Cell>
-      <Cell gridArea="main" style={{ height: 'calc(100vh - 3rem)' }}>
+      <Cell
+        gridArea="main"
+        style={{ height: 'calc(100% - 5rem)', marginTop: '1rem' }}
+      >
         {/* MAIN CHAT CONTENT WINDOW */}
         {activeChannel.ChannelArn ? (
           <>
@@ -151,6 +175,11 @@ const Channels = () => {
           </>
         ) : (
           <div className="placeholder">Welcome</div>
+        )}
+        {showSidebar && (
+          <Sidebar>
+            <SidebarSection>{member.username}</SidebarSection>
+          </Sidebar>
         )}
       </Cell>
     </Grid>

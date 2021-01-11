@@ -26,7 +26,7 @@ export const StyledChannelItem = styled.li<ChannelItemProps>`
     width: 100%;
     height: 100%;
     padding: 11px 0;
-    background-color: ${(props) => props.theme.channelList.bgd};
+    background-color: #f5f5f4;
     border: none;
     border-radius: unset;
     justify-content: left;
@@ -40,7 +40,7 @@ export const StyledChannelItem = styled.li<ChannelItemProps>`
     }
 
     &:active {
-      background-color: ${(props) => props.theme.channelList.active.bgd};
+      background-color: #00a963;
       color: ${(props) => props.theme.channelList.active.fontColor};
     }
 
@@ -50,7 +50,7 @@ export const StyledChannelItem = styled.li<ChannelItemProps>`
   }
 
   & .ch-label {
-    padding-left: 1.5rem;
+    color: 22ee2e;
   }
 
   & .ch-unread-badge {
@@ -67,8 +67,8 @@ export const StyledChannelItem = styled.li<ChannelItemProps>`
   }
 
   &.ch-selected .ch-channel-button {
-    background-color: ${(props) => props.theme.colors.primary.light};
-    color: ${(props) => props.theme.channelList.selected.fontColor};
+    background-color: #00a963;
+    color: white;
 
     &:focus {
       border: ${(props) => props.theme.channelList.focus.selectedBorder};

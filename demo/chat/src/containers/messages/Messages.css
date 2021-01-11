@@ -4,7 +4,7 @@
 
 .message-list-container {
   background-color: #f0f1f2;
-  overflow-y: scroll;
+  overflow-y: auto;
   position: relative;
 }
 
