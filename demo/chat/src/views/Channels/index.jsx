@@ -26,6 +26,7 @@ import {
 import { useAuthContext } from '../../providers/AuthProvider';
 import logo from './logo.png';
 import GCLogo from './GCLogo.png';
+import BigLogo from './BigLogo.png';
 import { describeChannel, createChannel } from '../../api/ChimeAPI';
 import appConfig from '../../Config';
 import Person from './Avatar1.png';
@@ -257,7 +258,10 @@ const Channels = () => {
             </div>
           </>
         ) : (
-          <div className="placeholder">Welcome</div>
+          <div className="placeholder">
+            <img src={BigLogo} alt="sedfsdf" style={{ marginBottom: '24px' }} />
+            <div style={{ fontSize: '20px', color: '#716E6A' }}>Welcome</div>
+          </div>
         )}
         {showSidebar && (
           <Sidebar>
