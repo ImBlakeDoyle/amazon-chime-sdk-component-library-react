@@ -12,9 +12,11 @@ import React, {
 
 import appConfig from '../../Config';
 import { useAuthContext } from '../AuthProvider';
-import { describeChannel, createMemberArn } from '../../api/ChimeAPI';
+import { describeChannel, createMemberArn, createChannel } from '../../api/ChimeAPI';
 import MessagingService from '../../services/MessagingService';
 import mergeArrayOfObjects from '../../utilities/mergeArrays';
+// const { userId } = useAuthContext().member;
+
 
 const ChatMessagingServiceContext = createContext(MessagingService);
 const ChatMessagingState = createContext();
@@ -90,7 +92,45 @@ const MessagingProvider = ({ children }) => {
   const messagesProcessor = async (message) => {
     const messageType = message?.headers['x-amz-chime-event-type'];
     const record = JSON.parse(message?.payload);
-    console.log('Incoming Message', message);
+    console.log('Incoming Message!', message);
+
+    fetch('https://niqwtahfb6.execute-api.us-east-1.amazonaws.com/default/MatchingService', {
+      mode: 'cors',
+    })
+      .then(response => response.text())
+      .then(data => console.log(data));
+
+    const newName = "test2";
+    const mode = 'RESTRICTED';
+    const privacy = 'PRIVATE';
+    const userId = 'us-east-1:e0d2390e-7036-4a6b-b695-1edc6d00aa03'
+
+    // const channelArn = await createChannel(
+    //   appConfig.appInstanceArn,
+    //   newName,
+    //   mode,
+    //   privacy,
+    //   userId
+    // );
+
+    // if (channelArn) {
+    //   const channel = await describeChannel(channelArn, userId);
+    //   setModal('');
+    //   if (channel) {
+    //     setChannelList([...channelList, channel]);
+    //     dispatch({
+    //       type: 0,
+    //       payload: {
+    //         message: 'Successfully created channel.',
+    //         severity: 'success',
+    //         autoClose: true,
+    //       },
+    //     });
+    //     setActiveChannel(channel);
+    //     channelIdChangeHandler(channel.ChannelArn);
+    //   }
+    // }
+
     switch (messageType) {
       // Channel Messages
       case 'CREATE_CHANNEL_MESSAGE':

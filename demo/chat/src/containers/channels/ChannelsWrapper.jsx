@@ -144,6 +144,10 @@ const ChannelsWrapper = () => {
   }, [activeChannel.ChannelArn, modal]);
 
   const onCreateChannel = async (e, newName, mode, privacy) => {
+    console.log(newName);
+    console.log(mode);
+    console.log(privacy);
+    console.log(userId);
     e.preventDefault();
     if (!newName) {
       dispatch({
