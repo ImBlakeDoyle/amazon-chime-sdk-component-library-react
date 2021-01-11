@@ -107,11 +107,11 @@ const Channels = () => {
     fetch('https://niqwtahfb6.execute-api.us-east-1.amazonaws.com/default/MatchingService', {
       mode: 'cors',
     })
-      .then(response => response.text())
-      .then(data => console.log(data));
+      .then(response => response.json())
+      .then(data => addChannels(data));
 
     // add channels based on response
-    addChannels(["Olivia Taylor", "Jonathan Washington"]);
+    //addChannels(["Olivia Taylor", "Jonathan Washington"]);
   };
 
   const HeadingWrapper = styled.div`
