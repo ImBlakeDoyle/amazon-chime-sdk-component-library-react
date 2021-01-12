@@ -317,7 +317,7 @@ const Messages = ({
         </i>
       </div>
       <CommonContainer>
-        <div>Things you have in common with Olivia:</div>
+        <div>Things you have in common with Jane:</div>
         <div>#ExperiencingBreastCancer #HavingChildren #Foodie</div>
       </CommonContainer>
       <InfiniteList
